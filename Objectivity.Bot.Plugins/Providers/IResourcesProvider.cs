@@ -5,8 +5,6 @@
 
     public interface IResourcesProvider : IPluginType
     {
-        string TenantName { get; }
-
         List<EmbeddedResource> EmbeddedResources { get; }
     }
 }

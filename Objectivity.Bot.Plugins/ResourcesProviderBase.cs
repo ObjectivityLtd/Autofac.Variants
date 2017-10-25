@@ -6,7 +6,6 @@
     using System.Linq;
     using Objectivity.Bot.Plugins.Providers;
     using Objectivity.Bot.Plugins.Resources.Models;
-    using Objectivity.Bot.Plugins.Settings;
 
     [Serializable]
     public abstract class ResourcesProviderBase : IResourcesProvider
@@ -14,13 +13,6 @@
         public const string ResourceExtension = ".resources";
 
         private List<EmbeddedResource> assemblyResources;
-
-        protected ResourcesProviderBase(ITenancySettings tenancySettings)
-        {
-            this.TenantName = this.GetTenantName(tenancySettings);
-        }
-
-        public string TenantName { get; }
 
         public List<EmbeddedResource> EmbeddedResources =>
             this.assemblyResources ?? (this.assemblyResources = this.GetAssemblyResources());
