@@ -5,17 +5,15 @@
     using System.Linq;
     using System.Reflection;
     using System.Resources;
-    using Objectivity.Bot.Plugins.Providers;
-    using Objectivity.Bot.Plugins.Resources.Models;
+    using Models;
+    using Providers;
 
     [Serializable]
     internal class ResourceManagersFactory
     {
-        public const string ResourceExtension = ".resources";
+        private readonly IVariantResolver<IResourcesVariant> resourcesProviders;
 
-        private readonly IPluginTypeProvider<IResourcesProvider> resourcesProviders;
-
-        public ResourceManagersFactory(IPluginTypeProvider<IResourcesProvider> resourcesProviders)
+        public ResourceManagersFactory(IVariantResolver<IResourcesVariant> resourcesProviders)
         {
             this.resourcesProviders = resourcesProviders;
         }
@@ -24,9 +22,8 @@
         {
             var resource = this.ResolveEmbeddedResource(resourceCategory);
             var resourceAssembly = GetResourceAssembly(resource);
-            var resourceName = resource.ResourceName.Replace(ResourceExtension, string.Empty);
 
-            return new ResourceManager(resourceName, resourceAssembly);
+            return new ResourceManager(resource.ResourceName, resourceAssembly);
         }
 
         private static Assembly GetResourceAssembly(EmbeddedResource resource)
@@ -47,22 +44,26 @@
             return resourceAssembly;
         }
 
-        private EmbeddedResource ResolveEmbeddedResource(string resourceCategory)
+        private EmbeddedResource ResolveEmbeddedResource(string resourceName)
         {
-            var resourcesProvider = this.resourcesProviders.GetPluginTypeForCurrentTenantOrDefault();
+            var resourcesProvider = this.resourcesProviders.Resolve();
 
             if (resourcesProvider == null)
             {
                 var exceptionMessage = string.Format(
                     CultureInfo.CurrentCulture,
-                    "Couldn't resolve any Embedded Resources Provider for Resource Category: '{0}'.",
-                    resourceCategory);
+                    "Couldn't resolve any Embedded Resources Provider for Resource Name: '{0}'.",
+                    resourceName);
 
+                // TODO: throw custom exception
                 throw new MissingMemberException(exceptionMessage);
             }
 
+            // TODO: throw new custom exception saying there is no such resource
+
             return resourcesProvider.EmbeddedResources
-                .Single(embeddedResource => embeddedResource.ResourceCategory == resourceCategory);
+                .Single(embeddedResource =>
+                    embeddedResource.ResourceName.Equals(resourceName, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

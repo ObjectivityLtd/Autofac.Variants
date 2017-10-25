@@ -1,9 +1,9 @@
 ﻿namespace Objectivity.Bot.Plugins.Providers
 {
     using System.Collections.Generic;
-    using Objectivity.Bot.Plugins.Resources.Models;
+    using Resources.Models;
 
-    public interface IResourcesProvider : IPluginType
+    public interface IResourcesVariant : IVariant
     {
         List<EmbeddedResource> EmbeddedResources { get; }
     }

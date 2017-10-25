@@ -2,6 +2,6 @@
 {
     public interface IResourcesManager
     {
-        string GetString(string key, string resourceCategory);
+        string GetString(string key, string resourceName);
     }
 }

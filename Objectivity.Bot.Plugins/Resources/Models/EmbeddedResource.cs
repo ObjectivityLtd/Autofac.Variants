@@ -5,17 +5,14 @@
     [Serializable]
     public class EmbeddedResource
     {
-        public EmbeddedResource(string assemblyName, string resourceName, string resourceCategory)
+        public EmbeddedResource(string assemblyName, string resourceName)
         {
             this.AssemblyName = assemblyName;
             this.ResourceName = resourceName;
-            this.ResourceCategory = resourceCategory;
         }
 
         public string AssemblyName { get; }
 
         public string ResourceName { get; }
-
-        public string ResourceCategory { get; }
     }
 }

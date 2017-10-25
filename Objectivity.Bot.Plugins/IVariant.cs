@@ -1,6 +1,6 @@
 ﻿namespace Objectivity.Bot.Plugins
 {
-    public interface IPluginType
+    public interface IVariant
     {
     }
 }

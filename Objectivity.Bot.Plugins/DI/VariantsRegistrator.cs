@@ -9,17 +9,19 @@
     using Resources;
     using Settings;
 
-    public static class PluginsRegistrator
+    public static class VariantsRegistrator
     {
-        public static void RegisterPlugins(ContainerBuilder builder, ITenancySettings tenancySettings)
+        public static void RegisterVariants(ContainerBuilder builder, ISettings settings)
         {
-            builder.RegisterInstance(tenancySettings).As<ITenancySettings>().ExternallyOwned();
+            // todo: throw custom exception if settings->VariantId is null or empty
+
+            builder.RegisterInstance(settings).As<ISettings>().ExternallyOwned();
 
             builder.RegisterType<StringResourcesManager>().As<IResourcesManager>();
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith(
-                    tenancySettings.PluginAssemblyNamePrefix,
+                    settings.DefaultVariantAssemblyName,
                     StringComparison.OrdinalIgnoreCase));
 
             var assembliesCatalogs = assemblies.Select(a => new AssemblyCatalog(a));
@@ -29,7 +31,7 @@
                 builder.RegisterComposablePartCatalog(aggregateCatalog);
             }
 
-            builder.RegisterGeneric(typeof(PluginTypeProvider<>)).As(typeof(IPluginTypeProvider<>))
+            builder.RegisterGeneric(typeof(VariantResolver<>)).As(typeof(IVariantResolver<>))
                 .InstancePerDependency();
         }
     }

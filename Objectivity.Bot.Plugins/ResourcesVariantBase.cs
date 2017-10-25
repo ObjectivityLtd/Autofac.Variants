@@ -4,11 +4,10 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using Objectivity.Bot.Plugins.Providers;
-    using Objectivity.Bot.Plugins.Resources.Models;
+    using Providers;
+    using Resources.Models;
 
-    [Serializable]
-    public abstract class ResourcesProviderBase : IResourcesProvider
+    public abstract class ResourcesVariantBase : IResourcesVariant
     {
         public const string ResourceExtension = ".resources";
 
@@ -17,18 +16,18 @@
         public List<EmbeddedResource> EmbeddedResources =>
             this.assemblyResources ?? (this.assemblyResources = this.GetAssemblyResources());
 
-        public static EmbeddedResource GetEmbeddedResource(string assemblyName, string resourceName)
+        private static EmbeddedResource GetEmbeddedResource(string assemblyName, string fileName)
         {
-            resourceName = Path.GetFileNameWithoutExtension(resourceName);
+            fileName = Path.GetFileNameWithoutExtension(fileName);
 
-            if (string.IsNullOrEmpty(resourceName))
+            if (string.IsNullOrEmpty(fileName))
             {
                 return null;
             }
 
-            var categoryName = resourceName.Split('.').Last();
+            var resourceName = fileName.Split('.').Last();
 
-            return new EmbeddedResource(assemblyName, resourceName, categoryName);
+            return new EmbeddedResource(assemblyName, resourceName);
         }
 
         private List<EmbeddedResource> GetAssemblyResources()

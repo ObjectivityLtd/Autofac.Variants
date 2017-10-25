@@ -84,24 +84,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Attributes\DefaultPluginAttribute.cs" />
-    <Compile Include="DI\PluginsRegistrator.cs" />
-    <Compile Include="Exceptions\AmbiguousPluginsException.cs" />
-    <Compile Include="Exceptions\DefaultPluginNotFoundException.cs" />
-    <Compile Include="Exceptions\PluginNotFoundException.cs" />
-    <Compile Include="IPluginType.cs" />
-    <Compile Include="Providers\IPluginTypeProvider.cs" />
+    <Compile Include="DI\VariantsRegistrator.cs" />
+    <Compile Include="Exceptions\AmbigousVariantInterfaceException.cs" />
+    <Compile Include="Exceptions\DefaultVariantInterfaceNotFoundException.cs" />
+    <Compile Include="Exceptions\VariantInterfaceNotFoundException.cs" />
+    <Compile Include="IVariant.cs" />
+    <Compile Include="Providers\IVariantResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\PluginTypeProvider.cs" />
-    <Compile Include="ResourcesProviderBase.cs" />
+    <Compile Include="Providers\VariantResolver.cs" />
+    <Compile Include="ResourcesVariantBase.cs" />
     <Compile Include="Resources\Models\EmbeddedResource.cs" />
-    <Compile Include="Providers\IResourcesProvider.cs" />
+    <Compile Include="Providers\IResourcesVariant.cs" />
     <Compile Include="Resources\IResourcesManager.cs" />
     <Compile Include="Resources\Models\ResourceValue.cs" />
     <Compile Include="Resources\ResourceManagersFactory.cs" />
     <Compile Include="Resources\StringResourcesManager.cs" />
-    <Compile Include="Settings\ITenancySettings.cs" />
-    <Compile Include="TenantResolver.cs" />
+    <Compile Include="Settings\ISettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
