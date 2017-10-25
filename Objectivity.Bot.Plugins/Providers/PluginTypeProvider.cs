@@ -1,9 +1,10 @@
 ﻿namespace Objectivity.Bot.Plugins.Providers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using Exceptions;
+    using Objectivity.Bot.Plugins.Attributes;
     using Settings;
 
     public class PluginTypeProvider<TPluginType> : IPluginTypeProvider<TPluginType>
@@ -56,7 +57,7 @@
                 return this.GetDefaultPluginType();
             }
 
-                if (tenantPluginTypesList.Count > 1)
+            if (tenantPluginTypesList.Count > 1)
             {
                 throw new AmbiguousPluginsException(this.pluginName, tenantName);
             }
@@ -67,7 +68,7 @@
         private TPluginType GetDefaultPluginType()
         {
             var defaultPluginTypesList = this.pluginTypes
-                .Where(plugin => plugin is IDefaultPluginType)
+                .Where(this.IsDefaultPlugin)
                 .ToList();
 
             if (!defaultPluginTypesList.Any())
@@ -81,6 +82,13 @@
             }
 
             return defaultPluginTypesList.Single();
+        }
+
+        private bool IsDefaultPlugin(TPluginType pluginTypeObject)
+        {
+            return pluginTypeObject
+                .GetType()
+                .GetCustomAttribute<DefaultPluginAttribute>() != null;
         }
     }
 }

@@ -84,11 +84,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\DefaultPluginAttribute.cs" />
     <Compile Include="DI\PluginsRegistrator.cs" />
     <Compile Include="Exceptions\AmbiguousPluginsException.cs" />
     <Compile Include="Exceptions\DefaultPluginNotFoundException.cs" />
     <Compile Include="Exceptions\PluginNotFoundException.cs" />
-    <Compile Include="IDefaultPluginType.cs" />
     <Compile Include="IPluginType.cs" />
     <Compile Include="Providers\IPluginTypeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
