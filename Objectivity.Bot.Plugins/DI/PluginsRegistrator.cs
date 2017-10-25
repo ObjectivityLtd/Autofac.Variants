@@ -15,7 +15,6 @@
         {
             builder.RegisterInstance(tenancySettings).As<ITenancySettings>().ExternallyOwned();
 
-            builder.RegisterType<ResourceValuesProvider>().As<IResourceValuesProvider>();
             builder.RegisterType<StringResourcesManager>().As<IResourcesManager>();
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()

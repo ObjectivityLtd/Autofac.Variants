@@ -1,39 +1,23 @@
 ﻿namespace Objectivity.Bot.Plugins.Resources
 {
     using System;
-    using System.Collections.Generic;
-    using System.Resources;
+    using Objectivity.Bot.Plugins.Providers;
 
     [Serializable]
     public class StringResourcesManager : IResourcesManager
     {
-        private readonly IResourceValuesProvider resourceValuesProvider;
+        private readonly ResourceManagersFactory resourceManagersFactory;
 
-        private readonly Dictionary<string, ResourceManager> resourceManagers =
-            new Dictionary<string, ResourceManager>();
-
-        public StringResourcesManager(IResourceValuesProvider resourceValuesProvider)
+        public StringResourcesManager(IPluginTypeProvider<IResourcesProvider> resourcesProviders)
         {
-            this.resourceValuesProvider = resourceValuesProvider;
+            this.resourceManagersFactory = new ResourceManagersFactory(resourcesProviders);
         }
 
         public string GetString(string key, string resourceCategory)
         {
-            var resourceManager = this.GetResourceManager(resourceCategory);
+            var resourceManager = this.resourceManagersFactory.GetResourceManager(resourceCategory);
 
             return resourceManager.GetString(key);
-        }
-
-        private ResourceManager GetResourceManager(string resourceKey)
-        {
-            if (!this.resourceManagers.ContainsKey(resourceKey))
-            {
-                var resourceManager = this.resourceValuesProvider.GetResourceManager(resourceKey);
-
-                this.resourceManagers.Add(resourceKey, resourceManager);
-            }
-
-            return this.resourceManagers[resourceKey];
         }
     }
 }

@@ -93,15 +93,15 @@
     <Compile Include="Providers\IPluginTypeProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\PluginTypeProvider.cs" />
-    <Compile Include="Resources\BaseAssemblyResourceProvider.cs" />
-    <Compile Include="Resources\EmbeddedResource.cs" />
-    <Compile Include="Resources\IAssemblyResourceProvider.cs" />
+    <Compile Include="ResourcesProviderBase.cs" />
+    <Compile Include="Resources\Models\EmbeddedResource.cs" />
+    <Compile Include="Providers\IResourcesProvider.cs" />
     <Compile Include="Resources\IResourcesManager.cs" />
-    <Compile Include="Resources\IResourceValuesProvider.cs" />
-    <Compile Include="Resources\ResourceValue.cs" />
-    <Compile Include="Resources\ResourceValuesProvider.cs" />
+    <Compile Include="Resources\Models\ResourceValue.cs" />
+    <Compile Include="Resources\ResourceManagersFactory.cs" />
     <Compile Include="Resources\StringResourcesManager.cs" />
     <Compile Include="Settings\ITenancySettings.cs" />
+    <Compile Include="TenantResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

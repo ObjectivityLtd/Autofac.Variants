@@ -1,4 +1,4 @@
-﻿namespace Objectivity.Bot.Plugins.Resources
+﻿namespace Objectivity.Bot.Plugins.Resources.Models
 {
     using System;
 

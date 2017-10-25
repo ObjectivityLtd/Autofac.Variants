@@ -1,27 +1,23 @@
 ﻿namespace Objectivity.Bot.Plugins.Resources
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Resources;
-    using Settings;
+    using Objectivity.Bot.Plugins.Providers;
+    using Objectivity.Bot.Plugins.Resources.Models;
 
     [Serializable]
-    public class ResourceValuesProvider : IResourceValuesProvider
+    internal class ResourceManagersFactory
     {
         public const string ResourceExtension = ".resources";
 
-        private readonly IEnumerable<IAssemblyResourceProvider> resourceProviders;
-        private readonly ITenancySettings tenancySettings;
+        private readonly IPluginTypeProvider<IResourcesProvider> resourcesProviders;
 
-        public ResourceValuesProvider(
-            IEnumerable<IAssemblyResourceProvider> resourceProviders,
-            ITenancySettings tenancySettings)
+        public ResourceManagersFactory(IPluginTypeProvider<IResourcesProvider> resourcesProviders)
         {
-            this.resourceProviders = resourceProviders;
-            this.tenancySettings = tenancySettings;
+            this.resourcesProviders = resourcesProviders;
         }
 
         public ResourceManager GetResourceManager(string resourceCategory)
@@ -53,13 +49,9 @@
 
         private EmbeddedResource ResolveEmbeddedResource(string resourceCategory)
         {
-            var embeddedResourceProvider = this.resourceProviders
-                .Where(resourcesProvider => resourcesProvider.EmbeddedResources
-                    .Any(embeddedResource => embeddedResource.ResourceCategory == resourceCategory))
-                .OrderByDescending(provider => provider.TenantName == this.tenancySettings.TenantName)
-                .FirstOrDefault();
+            var resourcesProvider = this.resourcesProviders.GetPluginTypeForCurrentTenantOrDefault();
 
-            if (embeddedResourceProvider == null)
+            if (resourcesProvider == null)
             {
                 var exceptionMessage = string.Format(
                     CultureInfo.CurrentCulture,
@@ -69,7 +61,7 @@
                 throw new MissingMemberException(exceptionMessage);
             }
 
-            return embeddedResourceProvider.EmbeddedResources
+            return resourcesProvider.EmbeddedResources
                 .Single(embeddedResource => embeddedResource.ResourceCategory == resourceCategory);
         }
     }

@@ -40,22 +40,10 @@
             return this.GetPluginType(tenantName, true);
         }
 
-        private static bool IsPluginTypeMatchingTenant(TPluginType pluginType, string tenantName)
-        {
-            var typeNamespace = pluginType.GetType().Namespace;
-
-            if (string.IsNullOrEmpty(typeNamespace))
-            {
-                return false;
-            }
-
-            return typeNamespace.EndsWith(tenantName, StringComparison.OrdinalIgnoreCase);
-        }
-
         private TPluginType GetPluginType(string tenantName, bool allowDefault)
         {
             var tenantPluginTypesList = this.pluginTypes
-                .Where(plugin => IsPluginTypeMatchingTenant(plugin, tenantName))
+                .Where(plugin => plugin.IsMatchingTenant(this.tenancySettings))
                 .ToList();
 
             if (!tenantPluginTypesList.Any() && !allowDefault)
