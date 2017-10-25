@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Reflection;
     using System.Resources;
@@ -39,7 +40,12 @@
 
             if (resourceAssembly == null)
             {
-                throw new ArgumentException($"Couldn't find assembly named {resource.AssemblyName}.");
+                var exceptionMessage = string.Format(
+                    CultureInfo.CurrentCulture,
+                    "Couldn't find assembly named {0}.",
+                    resource.AssemblyName);
+
+                throw new ArgumentException(exceptionMessage);
             }
 
             return resourceAssembly;
@@ -55,8 +61,12 @@
 
             if (embeddedResourceProvider == null)
             {
-                throw new MissingMemberException(
-                    $"Couldn't resolve any Embedded Resources Provider for Resource Category = {resourceCategory}.");
+                var exceptionMessage = string.Format(
+                    CultureInfo.CurrentCulture,
+                    "Couldn't resolve any Embedded Resources Provider for Resource Category: '{0}'.",
+                    resourceCategory);
+
+                throw new MissingMemberException(exceptionMessage);
             }
 
             return embeddedResourceProvider.EmbeddedResources

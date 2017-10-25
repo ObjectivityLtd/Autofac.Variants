@@ -19,7 +19,10 @@
             builder.RegisterType<StringResourcesManager>().As<IResourcesManager>();
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(a => a.FullName.Contains(tenancySettings.PluginAssemblyNamePrefix));
+                .Where(a => a.FullName.StartsWith(
+                    tenancySettings.PluginAssemblyNamePrefix,
+                    StringComparison.OrdinalIgnoreCase));
+
             var assembliesCatalogs = assemblies.Select(a => new AssemblyCatalog(a));
 
             using (var aggregateCatalog = new AggregateCatalog(assembliesCatalogs))

@@ -2,6 +2,5 @@
 {
     public interface IPluginType
     {
-        string TenantName { get; }
     }
 }

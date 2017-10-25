@@ -1,37 +1,98 @@
 ﻿namespace Objectivity.Bot.Plugins.Providers
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Exceptions;
     using Settings;
 
-    public class PluginTypeProvider<T> : IPluginTypeProvider<T>
-        where T : IPluginType
+    public class PluginTypeProvider<TPluginType> : IPluginTypeProvider<TPluginType>
+        where TPluginType : IPluginType
     {
+        private readonly string pluginName;
         private readonly ITenancySettings tenancySettings;
-        private readonly IEnumerable<T> pluginTypes;
+        private readonly IEnumerable<TPluginType> pluginTypes;
 
-        public PluginTypeProvider(ITenancySettings tenancySettings, IEnumerable<T> pluginTypes)
+        public PluginTypeProvider(ITenancySettings tenancySettings, IEnumerable<TPluginType> pluginTypes)
         {
+            this.pluginName = typeof(TPluginType).Name;
             this.tenancySettings = tenancySettings;
             this.pluginTypes = pluginTypes;
         }
 
-        public T GetDefaultPluginType()
+        public TPluginType GetPluginTypeForCurrentTenant()
         {
-            return this.GePluginTypeFor(this.tenancySettings.TenantName);
+            return this.GetPluginTypeForTenant(this.tenancySettings.TenantName);
         }
 
-        public T GePluginTypeFor(string tenantName)
+        public TPluginType GetPluginTypeForCurrentTenantOrDefault()
         {
-            var pluginTypesList = this.pluginTypes.ToList();
+            return this.GetPluginTypeForTenantOrDefault(this.tenancySettings.TenantName);
+        }
 
-            if (!pluginTypesList.Any())
+        public TPluginType GetPluginTypeForTenant(string tenantName)
+        {
+            return this.GetPluginType(tenantName, false);
+        }
+
+        public TPluginType GetPluginTypeForTenantOrDefault(string tenantName)
+        {
+            return this.GetPluginType(tenantName, true);
+        }
+
+        private static bool IsPluginTypeMatchingTenant(TPluginType pluginType, string tenantName)
+        {
+            var typeNamespace = pluginType.GetType().Namespace;
+
+            if (string.IsNullOrEmpty(typeNamespace))
             {
-                throw new PluginNotFoundException(typeof(T).Name);
+                return false;
             }
 
-            return this.pluginTypes.FirstOrDefault(dialog => dialog.TenantName == tenantName);
+            return typeNamespace.EndsWith(tenantName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private TPluginType GetPluginType(string tenantName, bool allowDefault)
+        {
+            var tenantPluginTypesList = this.pluginTypes
+                .Where(plugin => IsPluginTypeMatchingTenant(plugin, tenantName))
+                .ToList();
+
+            if (!tenantPluginTypesList.Any() && !allowDefault)
+            {
+                throw new PluginNotFoundException(this.pluginName, tenantName);
+            }
+
+            if (!tenantPluginTypesList.Any())
+            {
+                return this.GetDefaultPluginType();
+            }
+
+                if (tenantPluginTypesList.Count > 1)
+            {
+                throw new AmbiguousPluginsException(this.pluginName, tenantName);
+            }
+
+            return tenantPluginTypesList.Single();
+        }
+
+        private TPluginType GetDefaultPluginType()
+        {
+            var defaultPluginTypesList = this.pluginTypes
+                .Where(plugin => plugin is IDefaultPluginType)
+                .ToList();
+
+            if (!defaultPluginTypesList.Any())
+            {
+                throw new DefaultPluginNotFoundException(this.pluginName);
+            }
+
+            if (defaultPluginTypesList.Count > 1)
+            {
+                throw new AmbiguousPluginsException(this.pluginName, "Default");
+            }
+
+            return defaultPluginTypesList.Single();
         }
     }
 }

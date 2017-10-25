@@ -3,8 +3,12 @@
     public interface IPluginTypeProvider<T>
         where T : IPluginType
     {
-        T GetDefaultPluginType();
+        T GetPluginTypeForCurrentTenantOrDefault();
 
-        T GePluginTypeFor(string tenantName);
+        T GetPluginTypeForCurrentTenant();
+
+        T GetPluginTypeForTenant(string tenantName);
+
+        T GetPluginTypeForTenantOrDefault(string tenantName);
     }
 }
