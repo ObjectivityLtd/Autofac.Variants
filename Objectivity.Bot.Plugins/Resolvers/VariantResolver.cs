@@ -1,4 +1,4 @@
-﻿namespace Objectivity.Bot.Plugins.Providers
+﻿namespace Objectivity.Bot.Plugins.Resolvers
 {
     using System;
     using System.Collections.Generic;
@@ -56,7 +56,7 @@
 
             if (defaultPluginTypesList.Count > 1)
             {
-                throw new AmbigousVariantInterfaceException(this.variantInterfaceName, "Default");
+                throw new AmbigousVariantInterfaceException(this.variantInterfaceName);
             }
 
             return defaultPluginTypesList.Single();

@@ -7,10 +7,11 @@
     [Serializable]
     public class ResourceNotFoundException : Exception
     {
-        private const string ResourceNotFoundMessageFormat = "Couldn't find any Embedded Resources named '{0}'.";
+        private const string ResourceNotFoundForDefaultVariantMessageFormat =
+            "Couldn't find any embedded resources named '{0}' for default variant.";
 
         private const string ResourceNotFoundForVariantIdMessageFormat =
-            "Couldn't find any Embedded Resources named '{0}' for variant id '{1}'.";
+            "Couldn't find any embedded resources named '{0}' for VariantId '{1}'.";
 
         public ResourceNotFoundException()
         {
@@ -31,11 +32,6 @@
         {
         }
 
-        public ResourceNotFoundException(string resourceName, string variantId, Exception innerException)
-            : base(GetMessage(resourceName, variantId), innerException)
-        {
-        }
-
         protected ResourceNotFoundException(SerializationInfo serializationInfo, StreamingContext streamingContext)
             : base(serializationInfo, streamingContext)
         {
@@ -45,7 +41,10 @@
         {
             if (string.IsNullOrEmpty(variantId))
             {
-                return string.Format(CultureInfo.CurrentCulture, ResourceNotFoundMessageFormat, resourceName);
+                return string.Format(
+                    CultureInfo.CurrentCulture,
+                    ResourceNotFoundForDefaultVariantMessageFormat,
+                    resourceName);
             }
 
             return string.Format(

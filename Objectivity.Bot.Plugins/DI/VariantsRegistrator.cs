@@ -6,7 +6,7 @@
     using Autofac;
     using Autofac.Integration.Mef;
     using Exceptions;
-    using Providers;
+    using Resolvers;
     using Resources;
     using Settings;
 

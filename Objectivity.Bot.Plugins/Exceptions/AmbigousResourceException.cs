@@ -7,11 +7,11 @@
     [Serializable]
     public class AmbigousResourceException : Exception
     {
-        private const string AmbiguousResourceMessageFormat =
-            "Error while resolving Embedded Resource named '{0}': more than one resource found.";
+        private const string AmbiguousResourceForDefaultVariantMessageFormat =
+            "Error while resolving embedded resource named '{0}' for default variant: more than one resource found.";
 
         private const string AmbiguousResourceForVariantIdMesssageFormat =
-            "Error while resolving Embedded Resource named '{0}' for variant id = '{1}': more than one resource found.";
+            "Error while resolving embedded resource named '{0}' for VariantId '{1}': more than one resource found.";
 
         public AmbigousResourceException()
         {
@@ -24,11 +24,6 @@
 
         public AmbigousResourceException(string resourceName, string variantId)
             : base(GetMessage(resourceName, variantId))
-        {
-        }
-
-        public AmbigousResourceException(string resourceName, Exception innerException)
-            : base(GetMessage(resourceName), innerException)
         {
         }
 
@@ -46,7 +41,10 @@
         {
             if (string.IsNullOrEmpty(variantId))
             {
-                return string.Format(CultureInfo.CurrentCulture, AmbiguousResourceMessageFormat, resourceName);
+                return string.Format(
+                    CultureInfo.CurrentCulture,
+                    AmbiguousResourceForDefaultVariantMessageFormat,
+                    resourceName);
             }
 
             return string.Format(

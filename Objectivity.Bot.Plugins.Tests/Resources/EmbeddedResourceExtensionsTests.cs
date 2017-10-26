@@ -6,14 +6,12 @@
 
     public class EmbeddedResourceExtensionsTests
     {
-        private const string ResourceExtension = ".resources";
-
         [Fact]
-        public void GetResourceManager_AssemblyNameIsEmpty_ReturnsNull()
+        public void AssemblyNameIsEmpty_GetResourceManagerIsCalled_NullIsReturned()
         {
             var resourceName = "Resource";
             var assemblyName = "Test";
-            var resourceAssemblyPath = $"{resourceName}.{assemblyName}.{ResourceExtension}";
+            var resourceAssemblyPath = $"{resourceName}.{assemblyName}.{Constants.ResourceExtension}";
             var embeddedResource = new EmbeddedResource
             {
                 ResourceAssemblyPath = resourceAssemblyPath,
@@ -26,7 +24,7 @@
         }
 
         [Fact]
-        public void GetResourceManager_ResourceAssemblyPathIsEmpty_ReturnsNull()
+        public void ResourceAssemblyPathIsEmpty_GetResourceManagerIsCalled_NullIsReturned()
         {
             var resourceName = "Resource";
             var assemblyName = "Test";

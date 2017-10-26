@@ -7,11 +7,11 @@
     [Serializable]
     public class AmbigousVariantInterfaceException : Exception
     {
-        private const string AmbiguousvariantInterfacesMessageFormat =
-            "Error while resolving variantInterface type '{0}': more than one type found.";
+        private const string AmbiguousVariantInterfacesForDefaultVariantMessageFormat =
+            "Error while resolving variant interface '{0}' for default variant: more than one type found.";
 
-        private const string AmbiguousvariantInterfacesForvariantInterfaceIdMesssageFormat =
-            "Error while resolving variantInterface type '{0}' for variantInterface id '{1}': more than one type found.";
+        private const string AmbiguousVariantInterfacesForVariantIdMesssageFormat =
+            "Error while resolving variant interface '{0}' for VariantId '{1}': more than one type found.";
 
         public AmbigousVariantInterfaceException()
         {
@@ -24,11 +24,6 @@
 
         public AmbigousVariantInterfaceException(string variantInterface, string variantInterfaceId)
             : base(GetMessage(variantInterface, variantInterfaceId))
-        {
-        }
-
-        public AmbigousVariantInterfaceException(string variantInterface, Exception innerException)
-            : base(GetMessage(variantInterface), innerException)
         {
         }
 
@@ -46,12 +41,12 @@
         {
             if (string.IsNullOrEmpty(variantInterfaceId))
             {
-                return string.Format(CultureInfo.CurrentCulture, AmbiguousvariantInterfacesMessageFormat, variantInterface);
+                return string.Format(CultureInfo.CurrentCulture, AmbiguousVariantInterfacesForDefaultVariantMessageFormat, variantInterface);
             }
 
             return string.Format(
                 CultureInfo.CurrentCulture,
-                AmbiguousvariantInterfacesForvariantInterfaceIdMesssageFormat,
+                AmbiguousVariantInterfacesForVariantIdMesssageFormat,
                 variantInterface,
                 variantInterfaceId);
         }

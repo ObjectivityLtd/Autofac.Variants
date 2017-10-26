@@ -7,7 +7,8 @@
     [Serializable]
     public class EmptyVariantIdException : Exception
     {
-        private const string EmptyVariantIdMessage = "Couldn't register variants module for empty Variant Id.";
+        private const string EmptyVariantIdMessage =
+            "Couldn't register variants module for empty VariantId provided in settings.";
 
         public EmptyVariantIdException()
             : base(EmptyVariantIdMessage)
@@ -15,12 +16,12 @@
         }
 
         public EmptyVariantIdException(string message)
-            : base(string.Format(CultureInfo.InvariantCulture, "{0}: {1}", EmptyVariantIdMessage, message))
+            : base(GetMessage(message))
         {
         }
 
         public EmptyVariantIdException(string message, Exception innerException)
-            : base(string.Format(CultureInfo.InvariantCulture, "{0}: {1}", EmptyVariantIdMessage, message), innerException)
+            : base(GetMessage(message), innerException)
         {
         }
 
@@ -29,6 +30,12 @@
             StreamingContext streamingContext)
             : base(serializationInfo, streamingContext)
         {
+        }
+
+        private static string GetMessage(string customMessage)
+        {
+            var pattern = "{0}: {1}";
+            return string.Format(CultureInfo.InvariantCulture, pattern, EmptyVariantIdMessage, customMessage);
         }
     }
 }

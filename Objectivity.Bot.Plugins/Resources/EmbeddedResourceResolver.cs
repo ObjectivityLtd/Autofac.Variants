@@ -35,17 +35,12 @@
 
             var variantResources = resources.Where(r => r.VariantName == this.settings.VariantId).ToList();
 
-            if (!variantResources.Any())
-            {
-                return this.ResolveDefaultEmbeddedResource(resourceName);
-            }
-
             if (variantResources.Count > 1)
             {
                 throw new AmbigousResourceException(resourceName, this.settings.VariantId);
             }
 
-            return variantResources.Single();
+            return variantResources.SingleOrDefault();
         }
 
         public EmbeddedResource ResolveDefaultEmbeddedResource(string resourceName)
@@ -57,12 +52,12 @@
 
             if (!defaultResources.Any())
             {
-                throw new ResourceNotFoundException(resourceName, "Default");
+                throw new ResourceNotFoundException(resourceName);
             }
 
             if (defaultResources.Count > 1)
             {
-                throw new AmbigousResourceException(resourceName, "Default");
+                throw new AmbigousResourceException(resourceName);
             }
 
             return defaultResources.Single();

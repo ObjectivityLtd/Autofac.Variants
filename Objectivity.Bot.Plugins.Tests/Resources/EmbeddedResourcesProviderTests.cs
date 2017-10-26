@@ -1,7 +1,6 @@
 ﻿namespace Objectivity.Bot.Plugins.Tests.Resources
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using System.Runtime.InteropServices;
     using Moq;
@@ -12,12 +11,13 @@
 
     public class EmbeddedResourcesProviderTests
     {
-        private const string ResourceExtension = ".resources";
+        // todo: introduce GivenWhenThen
+        private const string ResourceName = "Messages";
         private const string VariantAssemblyName = "TestAssembly";
         private const string VariantId = "TestVariant";
 
         [Fact]
-        public void HasResourceExtension_ResourceWithoutExtension_ReturnsFalse()
+        public void ResourceHasNoExtension_HasResourceExtensionIsCalled_FalseIsReturned()
         {
             var provider = this.GetEmbeddedResourcesProvider();
             var assemblyResourceName = $"{VariantAssemblyName}.{VariantId}.Resource";
@@ -27,7 +27,7 @@
         }
 
         [Fact]
-        public void HasResourceExtension_ResourceWithNotCorrectExtension_ReturnsFalse()
+        public void ResourceHasIncorrectExtension_HasResourceExtensionIsCalled_FalseIsReturned()
         {
             var provider = this.GetEmbeddedResourcesProvider();
             var assemblyResourceName = $"{VariantAssemblyName}.{VariantId}.Resource.txt";
@@ -37,9 +37,9 @@
         }
 
         [Theory]
-        [InlineData(ResourceExtension)]
+        [InlineData(Constants.ResourceExtension)]
         [InlineData(".RESOURCES")]
-        public void HasResourceExtension_ResourceWithCorrectExtension_ReturnsTrue(string extension)
+        public void ResourceHasCorrectExtension_HasResourceExtensionIsCalled_TrueIsReturned(string extension)
         {
             var provider = this.GetEmbeddedResourcesProvider();
             var assemblyResourceName = $"{VariantAssemblyName}.{VariantId}.Resource{extension}";
@@ -49,7 +49,7 @@
         }
 
         [Fact]
-        public void GetResourceName_EmptyResourceAssemblyPath_ReturnsEmptyString()
+        public void ResourceHasEmptyAssemblyPath_GetResourceNameIsCalled_EmptyStringIsReturned()
         {
             var result = EmbeddedResourcesProvider.GetResourceName(string.Empty);
 
@@ -57,29 +57,27 @@
         }
 
         [Fact]
-        public void GetResourceName_ResourceAssemblyPathWithoutNamespace_ReturnsCorrectResourceName()
+        public void ResourceHasEmptyAssemblyPathWithoutNamespace_GetResourceNameIsCalled_CorrectResourceNameIsReturned()
         {
-            var resourceName = "Messages";
-            var resourceAssemblyPath = $"{resourceName}{ResourceExtension}";
+            var resourceAssemblyPath = $"{ResourceName}{Constants.ResourceExtension}";
             var result = EmbeddedResourcesProvider.GetResourceName(resourceAssemblyPath);
 
             Assert.NotEmpty(result);
-            Assert.Equal(resourceName, result);
+            Assert.Equal(ResourceName, result);
         }
 
         [Fact]
-        public void GetResourceName_TypicalResourceAssemblyPath_ReturnsCorrectResourceName()
+        public void ResourceHasNormalAssemblyPath_GetResourceNameIsCalled_CorrectResourceNameIsReturned()
         {
-            var resourceName = "Messages";
-            var resourceAssemblyPath = $"{VariantAssemblyName}.{VariantId}.{resourceName}{ResourceExtension}";
+            var resourceAssemblyPath = $"{VariantAssemblyName}.{VariantId}.{ResourceName}{Constants.ResourceExtension}";
             var result = EmbeddedResourcesProvider.GetResourceName(resourceAssemblyPath);
 
             Assert.NotEmpty(result);
-            Assert.Equal(resourceName, result);
+            Assert.Equal(ResourceName, result);
         }
 
         [Fact]
-        public void GetAssemblyResources_NullAssembly_ReturnsEmptyCollection()
+        public void AssemblyIsNull_GetAssemblyResourcesIsCalled_EmptyCollectionIsReturned()
         {
             var provider = this.GetEmbeddedResourcesProvider();
             var result = provider.GetAssemblyResources(null);
@@ -89,7 +87,7 @@
         }
 
         [Fact]
-        public void GetAssemblyResources_AssemblyWithoutResources_ReturnsEmptyCollection()
+        public void AssemblyHasNoResources_GetAssemblyResourcesIsCalled_EmptyCollectionIsReturned()
         {
             var provider = this.GetEmbeddedResourcesProvider();
             var assembly = this.GetAssembly($"{VariantAssemblyName}.{VariantId}");
@@ -99,53 +97,19 @@
             Assert.Empty(result);
         }
 
-        [Fact]
-        public void GetAssemblyResources_AssemblyWithOneResource_ReturnsOneEmbeddedResourceWithCorrectProperties()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(3)]
+        [InlineData(10)]
+        public void AssemblyHasSomeResources_GetAssemblyResourcesIsCalled_SomeCorrectEmbeddedResourcesAreReturned(int resourcesCount)
         {
             var provider = this.GetEmbeddedResourcesProvider();
             var assemblyName = $"{VariantAssemblyName}.{VariantId}";
-            var resourceName = "Messages";
-            var resourceAssemblyPath = $"{assemblyName}.{resourceName}{ResourceExtension}";
-            var assembly = this.GetAssembly(assemblyName, resourceAssemblyPath);
-            var result = provider.GetAssemblyResources(assembly);
-
-            Assert.NotNull(result);
-            Assert.True(result.Count == 1);
-
-            var resource = result.Single();
-
-            AssertEmbeddedResource(resource, assemblyName, resourceName, resourceAssemblyPath, VariantId);
-        }
-
-        [Fact]
-        public void GetAssemblyResources_DefaultAssemblyWith1Resource_Returns1EmbeddedResourceWithCorrectProperties()
-        {
-            var provider = this.GetEmbeddedResourcesProvider();
-            var assemblyName = $"{VariantAssemblyName}";
-            var resourceName = "Messages";
-            var resourceAssemblyPath = $"{assemblyName}.{resourceName}{ResourceExtension}";
-            var assembly = this.GetAssembly(assemblyName, resourceAssemblyPath);
-            var result = provider.GetAssemblyResources(assembly);
-
-            Assert.NotNull(result);
-            Assert.True(result.Count == 1);
-
-            var resource = result.Single();
-
-            AssertEmbeddedResource(resource, assemblyName, resourceName, resourceAssemblyPath, string.Empty);
-        }
-
-        [Fact]
-        public void GetAssemblyResources_AssemblyWith10Resources_Returns10EmbeddedResourceWithCorrectProperties()
-        {
-            var provider = this.GetEmbeddedResourcesProvider();
-            var assemblyName = $"{VariantAssemblyName}.{VariantId}";
-            var resourceName = "Messages";
             var resourceAssemblyPaths = new List<string>();
 
-            for (var i = 1; i <= 10; i++)
+            for (var i = 1; i <= resourcesCount; i++)
             {
-                var resourceAssemblyPath = $"{assemblyName}.{resourceName}{ResourceExtension}";
+                var resourceAssemblyPath = $"{assemblyName}.{ResourceName}{Constants.ResourceExtension}";
                 resourceAssemblyPaths.Add(resourceAssemblyPath);
             }
 
@@ -153,14 +117,14 @@
             var result = provider.GetAssemblyResources(assembly);
 
             Assert.NotNull(result);
-            Assert.True(result.Count == 10);
+            Assert.True(result.Count == resourcesCount);
 
-            for (var i = 1; i <= 10; i++)
+            for (var i = 1; i <= resourcesCount; i++)
             {
                 var resource = result[i - 1];
-                var resourceAssemblyPath = $"{assemblyName}.{resourceName}{ResourceExtension}";
+                var resourceAssemblyPath = $"{assemblyName}.{ResourceName}{Constants.ResourceExtension}";
 
-                AssertEmbeddedResource(resource, assemblyName, resourceName, resourceAssemblyPath, VariantId);
+                AssertEmbeddedResource(resource, assemblyName, ResourceName, resourceAssemblyPath, VariantId);
             }
         }
 

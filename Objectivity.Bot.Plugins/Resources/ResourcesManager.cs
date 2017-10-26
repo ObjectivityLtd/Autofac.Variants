@@ -18,7 +18,7 @@
         {
             var embeddedResource = this.resourcesResolver.ResolveEmbeddedResource(resourceName);
 
-            if (!embeddedResource.ContainsKey(key))
+            if (embeddedResource == null || !embeddedResource.ContainsKey(key))
             {
                 embeddedResource = this.resourcesResolver.ResolveDefaultEmbeddedResource(resourceName);
             }
