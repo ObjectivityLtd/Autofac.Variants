@@ -87,11 +87,13 @@
     <Compile Include="DI\VariantsRegistrator.cs" />
     <Compile Include="Exceptions\AmbigousResourceException.cs" />
     <Compile Include="Exceptions\AmbigousVariantInterfaceException.cs" />
+    <Compile Include="Exceptions\AssemblyNotFountException.cs" />
     <Compile Include="Exceptions\DefaultVariantInterfaceNotFoundException.cs" />
     <Compile Include="Exceptions\EmptyVariantIdException.cs" />
     <Compile Include="Exceptions\ResourceKeyNotFoundException.cs" />
     <Compile Include="Exceptions\ResourceNotFoundException.cs" />
     <Compile Include="Exceptions\VariantInterfaceNotFoundException.cs" />
+    <Compile Include="Extensions\EmbeddedResourceExtensions.cs" />
     <Compile Include="IVariant.cs" />
     <Compile Include="Providers\IVariantResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
