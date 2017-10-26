@@ -10,9 +10,15 @@
 
     public static class EmbeddedResourceExtensions
     {
-        internal static ResourceManager GetResourceManager(this EmbeddedResource embeddedResource)
+        public static ResourceManager GetResourceManager(this EmbeddedResource embeddedResource)
         {
-            if (string.IsNullOrEmpty(embeddedResource.AssemblyName) || string.IsNullOrEmpty(embeddedResource.ResourceAssemblyPath))
+            if (embeddedResource == null)
+            {
+                return null;
+            }
+
+            if (string.IsNullOrEmpty(embeddedResource.AssemblyName) ||
+                string.IsNullOrEmpty(embeddedResource.ResourceAssemblyPath))
             {
                 return null;
             }

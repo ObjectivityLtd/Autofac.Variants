@@ -132,10 +132,6 @@
 
             var resource = result.Single();
 
-            Assert.Equal(assemblyName, resource.AssemblyName);
-            Assert.Equal(resourceAssemblyPath, resource.ResourceAssemblyPath);
-            Assert.Equal(resourceName, resource.ResourceName);
-            Assert.Equal(string.Empty, resource.VariantName);
             AssertEmbeddedResource(resource, assemblyName, resourceName, resourceAssemblyPath, string.Empty);
         }
 
