@@ -4,11 +4,11 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Reflection;
+    using System.Runtime.InteropServices;
     using Models;
     using Settings;
 
-    internal class EmbeddedResourcesProvider
+    public class EmbeddedResourcesProvider
     {
         private const string ResourceExtension = ".resources";
 
@@ -25,7 +25,7 @@
 
             if (string.IsNullOrEmpty(fileName))
             {
-                return null;
+                return string.Empty;
             }
 
             return fileName.Split('.').Last();
@@ -53,8 +53,13 @@
             return resources;
         }
 
-        public List<EmbeddedResource> GetAssemblyResources(Assembly assembly)
+        public List<EmbeddedResource> GetAssemblyResources(_Assembly assembly)
         {
+            if (assembly == null)
+            {
+                return new List<EmbeddedResource>();
+            }
+
             var assemblyName = assembly.GetName().Name;
             var assemblyResourceNames = assembly.GetManifestResourceNames();
             var variantName = assemblyName
