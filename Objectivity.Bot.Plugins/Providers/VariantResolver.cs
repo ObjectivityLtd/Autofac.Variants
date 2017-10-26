@@ -45,7 +45,7 @@
         {
             var defaultPluginTypesList = this.variants
                 // ReSharper disable once PossibleNullReferenceException - ensured by namespace convetion
-                .Where(variant => variant.GetType().Namespace
+                .Where(variant => variant.GetType().Assembly.GetName().Name
                     .Equals(this.settings.DefaultVariantAssemblyName, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
