@@ -85,20 +85,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DI\VariantsRegistrator.cs" />
+    <Compile Include="Exceptions\AmbigousResourceException.cs" />
     <Compile Include="Exceptions\AmbigousVariantInterfaceException.cs" />
     <Compile Include="Exceptions\DefaultVariantInterfaceNotFoundException.cs" />
+    <Compile Include="Exceptions\EmptyVariantIdException.cs" />
+    <Compile Include="Exceptions\ResourceKeyNotFoundException.cs" />
+    <Compile Include="Exceptions\ResourceNotFoundException.cs" />
     <Compile Include="Exceptions\VariantInterfaceNotFoundException.cs" />
     <Compile Include="IVariant.cs" />
     <Compile Include="Providers\IVariantResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\VariantResolver.cs" />
-    <Compile Include="ResourcesVariantBase.cs" />
+    <Compile Include="Resources\EmbeddedResourceResolver.cs" />
+    <Compile Include="Resources\EmbeddedResourcesProvider.cs" />
     <Compile Include="Resources\Models\EmbeddedResource.cs" />
-    <Compile Include="Providers\IResourcesVariant.cs" />
     <Compile Include="Resources\IResourcesManager.cs" />
-    <Compile Include="Resources\Models\ResourceValue.cs" />
-    <Compile Include="Resources\ResourceManagersFactory.cs" />
-    <Compile Include="Resources\StringResourcesManager.cs" />
+    <Compile Include="Resources\ResourcesManager.cs" />
     <Compile Include="Settings\ISettings.cs" />
   </ItemGroup>
   <ItemGroup>

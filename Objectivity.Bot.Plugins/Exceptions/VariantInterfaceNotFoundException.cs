@@ -9,7 +9,8 @@
     {
         private const string VariantNotFoundMessageFormat = "Couldn't find any variants of type '{0}'.";
 
-        private const string VariantNotFoundForTenantMessageFormat = "Couldn't find any variants of type '{0}' for variant id '{1}'.";
+        private const string VariantNotFoundForVariantIdMessageFormat =
+            "Couldn't find any variants of type '{0}' for variant id '{1}'.";
 
         public VariantInterfaceNotFoundException()
         {
@@ -35,7 +36,9 @@
         {
         }
 
-        protected VariantInterfaceNotFoundException(SerializationInfo serializationInfo, StreamingContext streamingContext)
+        protected VariantInterfaceNotFoundException(
+            SerializationInfo serializationInfo,
+            StreamingContext streamingContext)
             : base(serializationInfo, streamingContext)
         {
         }
@@ -49,7 +52,7 @@
 
             return string.Format(
                 CultureInfo.CurrentCulture,
-                VariantNotFoundForTenantMessageFormat,
+                VariantNotFoundForVariantIdMessageFormat,
                 variantInterface,
                 variantId);
         }

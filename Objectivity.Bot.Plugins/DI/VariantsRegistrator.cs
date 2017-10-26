@@ -5,6 +5,7 @@
     using System.Linq;
     using Autofac;
     using Autofac.Integration.Mef;
+    using Exceptions;
     using Providers;
     using Resources;
     using Settings;
@@ -13,11 +14,14 @@
     {
         public static void RegisterVariants(ContainerBuilder builder, ISettings settings)
         {
-            // todo: throw custom exception if settings->VariantId is null or empty
+            if (string.IsNullOrEmpty(settings?.VariantId))
+            {
+                throw new EmptyVariantIdException();
+            }
 
             builder.RegisterInstance(settings).As<ISettings>().ExternallyOwned();
 
-            builder.RegisterType<StringResourcesManager>().As<IResourcesManager>();
+            builder.RegisterType<ResourcesManager>().As<IResourcesManager>();
 
             var assemblies = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => a.FullName.StartsWith(
