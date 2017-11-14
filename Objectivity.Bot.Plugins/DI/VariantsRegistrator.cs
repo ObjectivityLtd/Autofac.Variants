@@ -3,6 +3,8 @@
     using System;
     using System.ComponentModel.Composition.Hosting;
     using System.Linq;
+    using System.Reflection;
+    using System.Web.Compilation;
     using Autofac;
     using Autofac.Integration.Mef;
     using Exceptions;
@@ -23,7 +25,8 @@
 
             builder.RegisterType<ResourcesManager>().As<IResourcesManager>();
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+            var assemblies = BuildManager.GetReferencedAssemblies()
+                .Cast<Assembly>()
                 .Where(a => a.FullName.StartsWith(
                     settings.DefaultVariantAssemblyName,
                     StringComparison.OrdinalIgnoreCase));
@@ -35,7 +38,8 @@
                 builder.RegisterComposablePartCatalog(aggregateCatalog);
             }
 
-            builder.RegisterGeneric(typeof(VariantResolver<>)).As(typeof(IVariantResolver<>))
+            builder.RegisterGeneric(typeof(VariantResolver<>))
+                .As(typeof(IVariantResolver<>))
                 .InstancePerDependency();
         }
     }
