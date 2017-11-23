@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<RuleSet Name="General rules" Description="General code analysis rules." ToolsVersion="15.0">
+<RuleSet Name="General rules for tests" Description="General code analysis rules for test projects." ToolsVersion="15.0">
   <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
     <Rule Id="CA1000" Action="Error" />
     <Rule Id="CA1001" Action="Error" />
@@ -50,7 +50,6 @@
     <Rule Id="CA1301" Action="Error" />
     <Rule Id="CA1302" Action="Error" />
     <Rule Id="CA1304" Action="Warning" />
-    <Rule Id="CA1305" Action="Warning" />
     <Rule Id="CA1306" Action="Warning" />
     <Rule Id="CA1307" Action="Error" />
     <Rule Id="CA1308" Action="Error" />
@@ -65,7 +64,6 @@
     <Rule Id="CA1701" Action="Error" />
     <Rule Id="CA1703" Action="Error" />
     <Rule Id="CA1704" Action="Error" />
-    <Rule Id="CA1707" Action="Error" />
     <Rule Id="CA1709" Action="Error" />
     <Rule Id="CA1710" Action="Error" />
     <Rule Id="CA1711" Action="Error" />
@@ -91,9 +89,7 @@
     <Rule Id="CA1819" Action="Error" />
     <Rule Id="CA1820" Action="Error" />
     <Rule Id="CA1821" Action="Error" />
-    <Rule Id="CA1822" Action="Error" />
     <Rule Id="CA1823" Action="Error" />
-    <Rule Id="CA2000" Action="Error" />
     <Rule Id="CA2001" Action="Error" />
     <Rule Id="CA2002" Action="Error" />
     <Rule Id="CA2100" Action="Error" />
@@ -339,7 +335,6 @@
     <Rule Id="CS8094" Action="Error" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
-    <Rule Id="SA0001" Action="None" />
     <Rule Id="SA1200" Action="Error" />
     <Rule Id="SA1309" Action="None" />
     <Rule Id="SA1600" Action="None" />

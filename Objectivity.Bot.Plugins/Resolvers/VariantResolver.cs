@@ -23,6 +23,7 @@
         public TVariant Resolve()
         {
             var matchingVariantsList = this.variants
+
                 // ReSharper disable once PossibleNullReferenceException - ensured by namespace convetion
                 .Where(variant => variant.GetType().Namespace
                     .EndsWith(this.settings.VariantId, StringComparison.OrdinalIgnoreCase))
@@ -35,7 +36,7 @@
 
             if (matchingVariantsList.Count > 1)
             {
-                throw new AmbigousVariantInterfaceException(this.variantInterfaceName, this.settings.VariantId);
+                throw new AmbiguousVariantInterfaceException(this.variantInterfaceName, this.settings.VariantId);
             }
 
             return matchingVariantsList.Single();
@@ -44,6 +45,7 @@
         private TVariant ResolveDefault()
         {
             var defaultPluginTypesList = this.variants
+
                 // ReSharper disable once PossibleNullReferenceException - ensured by namespace convetion
                 .Where(variant => variant.GetType().Assembly.GetName().Name
                     .Equals(this.settings.DefaultVariantAssemblyName, StringComparison.OrdinalIgnoreCase))
@@ -56,7 +58,7 @@
 
             if (defaultPluginTypesList.Count > 1)
             {
-                throw new AmbigousVariantInterfaceException(this.variantInterfaceName);
+                throw new AmbiguousVariantInterfaceException(this.variantInterfaceName);
             }
 
             return defaultPluginTypesList.Single();

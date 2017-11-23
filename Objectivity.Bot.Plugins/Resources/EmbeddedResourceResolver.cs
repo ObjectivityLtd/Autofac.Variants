@@ -37,7 +37,7 @@
 
             if (variantResources.Count > 1)
             {
-                throw new AmbigousResourceException(resourceName, this.settings.VariantId);
+                throw new AmbiguousResourceException(resourceName, this.settings.VariantId);
             }
 
             return variantResources.SingleOrDefault();
@@ -57,7 +57,7 @@
 
             if (defaultResources.Count > 1)
             {
-                throw new AmbigousResourceException(resourceName);
+                throw new AmbiguousResourceException(resourceName);
             }
 
             return defaultResources.Single();

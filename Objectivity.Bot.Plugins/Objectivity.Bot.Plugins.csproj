@@ -56,8 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DI\VariantsRegistrator.cs" />
-    <Compile Include="Exceptions\AmbigousResourceException.cs" />
-    <Compile Include="Exceptions\AmbigousVariantInterfaceException.cs" />
+    <Compile Include="Exceptions\AmbiguousResourceException.cs" />
+    <Compile Include="Exceptions\AmbiguousVariantInterfaceException.cs" />
     <Compile Include="Exceptions\AssemblyNotFountException.cs" />
     <Compile Include="Exceptions\DefaultVariantInterfaceNotFoundException.cs" />
     <Compile Include="Exceptions\EmptyVariantIdException.cs" />
@@ -87,6 +87,10 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\CustomDictionary.xml">
+      <Link>CustomDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -9,7 +9,8 @@
     <Recognized>
       <Word>cors</Word>
       <Word>api</Word>
-      <Word>jsn</Word>>
+      <Word>jsn</Word>
+      <Word>Registrator</Word>
     </Recognized>
     <!--
     <Deprecated>
