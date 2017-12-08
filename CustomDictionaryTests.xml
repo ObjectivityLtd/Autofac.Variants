@@ -6,10 +6,9 @@
       <Word></Word>
     </Unrecognized>
     -->
-	<!--
     <Recognized>
-    </Recognized>
-	-->
+      <Word>Autofac</Word>
+      </Recognized>
     <!--
     <Deprecated>
       <Term PreferredAlternate=""></Term>

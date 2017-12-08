@@ -29,7 +29,7 @@ test:
     - '**\*.Tests.dll'
 assembly_info:
   patch: true
-  file: \Objectivity.Bot.Plugins\Properties\AssemblyInfo.cs
+  file: \Autofac.Variants\Properties\AssemblyInfo.cs
   assembly_version: "{version}"
   assembly_file_version: "{version}"
 environment:

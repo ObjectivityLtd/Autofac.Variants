@@ -1,6 +1,6 @@
-# Bot.Plugins
+# Autofac.Variants
 
-Library for Bot Framework that makes it easy to introduce multi-tenant plugins by defining resources and customer-specific logic.
+Autofac enhancement that makes it easy to introduce multi-tenant variants by defining resources and customer-specific logic.
 
 # Note
 
@@ -9,71 +9,76 @@ This project is still a work in progress, all contributions from your site will 
 ## Installation:
 
 You can install the package using the nuget:
-Install-Package Objectivity.Bot.Plugins
+Install-Package Autofac.Variants
 
 ## Usage
 
 ### Project structure
 
-To use the library properly you need to structurize your project correctly. It’s necessary to define the project for each tenant using the similar pattern, eg:
+To use the library properly you need to structurize your project correctly. At first, you need to define common project, which will include default functionalities and resources:
 
-* `MyBot.Plugins.Company1`
-* `MyBot.Plugins.CompanyN`
+* `MyApp`
 
-If you want to define a logic that should be tenant-specific, it is recommended to define the common project, containing the interfaces that can be implemented for specific tenants:
+Then you can define tenant-specific projects, implementing tenant logic and keeping its resources. Tenant-specific project's name must start with the suffix taken from the common project and tenant identifier. eg:
 
-* MyBot.Plugins.Common
+* `MyApp.FirstVariant`
+* `MyApp.SecondVariant`
 
-### Implement plugins
+The project name part that stands after common project suffix (eg. `FirstVariant`, `SecondVariant`) is the tenant name.
 
-At first you need to define the interface that should be resolved using plugins, which inherits from the IPluginType interface. Example:
+Note: you can also define the shared/core project, which will be referenced in each variant project. That's recommended solution to deliver interfaces and shared objects across all projects.
+
+### Implement variants
+
+At first you need to define the interface that should be resolved as variant, which inherits from IVariant interface in shared project. Example:
 
 ```cs
-using Objectivity.Bot.Plugins;
+using Autofac.Variants;
 
-public interface ITenantDialog : IPluginType {
+public interface IEmployeeService : IVariant {
 }
 ```
 
-Each plugin can introduce its own implementation of the interface. It is essential to include the export decorator. Example:
+Each variant implementation can introduce its own implementation of the interface. It is essential to include the export decorator. Example:
 
 ```cs
 [Serializable]
-[Export(typeof(ITenantDialog))]
+[Export(typeof(IVariant))]
 []
-public class CompanyNTenantDialog : ITenantDialog {
+public class FirstVariantEmployeeService : IEmployeeService {
 }
 ```
 
 Note: Export annotation is available after referencing System.ComponentModel.Composition assembly.
+Note: Each class implementing variant interface must has unique name.
 
-### Register & use the plugins
+### Register & use the variants
 
-To use the plugins you need at first to register them in your DI module. You will need to deliver the implementation of ITenancySettings interface:
+To use the variant you need at first to register them in your DI module. You will need to deliver the implementation of ISettings interface:
 
 ```cs
-namespace MyBot.Settings
+namespace MyApp
 {
     using System.Configuration;
-    using Objectivity.Bot.Plugins.Settings;
+    using Autofac.Variants.Settings;
 
-    public class TenancySettings : ITenancySettings
+    public class VariantSettings : ISettings
     {
-        public string TenantName => ConfigurationManager.AppSettings["TenantName"];
+        public string VariantId => ConfigurationManager.AppSettings["VariantId"];
 
-        public string PluginAssemblyNamePrefix => "MyBot.Plugins";
+        public string DefaultVariantAssemblyName => "MyApp";
     }
 }
 
 ```
 
-Then you can use the helper method available in `Objectivity.Bot.Plugins.DI` namespace:
+Then you can use the helper method available in `Autofac.Variants.DI` namespace in your Autofac DI module to register variants:
 
 ```cs
 using Autofac;
-using Objectivity.Bot.Plugins.DI;
+using Autofac.Variants.DI;
 
-public class LuisDialogsModule : Module
+public class MyAppAutofacModule : Module
 {
 	protected override void Load(ContainerBuilder builder)
 	{
@@ -81,53 +86,59 @@ public class LuisDialogsModule : Module
 		
 		// register your types here
 
-		PluginsRegistrator.RegisterPlugins(builder, new TenancySettings());
+		VariantsRegistrator.RegisterVariants(builder, new VariantSettings());
 	}
 }
 ```
 
-Finally, you can use the generic IPluginTypeProvider, which is getting registered to your container. The provider can be injected to your code, example:
+Finally, you can use generic IVariantResolver interface to resolve apropriate variant. The provider can be injected to your code, example:
 
 ```cs
-public class DialogManager
+public class ServicesProvider
 {
-	public DialogManager(IPluginTypeProvider<ITenantDialog> pluginTypeProvider)
+	private readonly IVariantResolver<IEmployeeService> employeeServiceResolver;
+
+	public ServicesProvider(IVariantResolver<IEmployeeService> employeeServiceResolver)
 	{
+		this.employeeServiceResolver = employeeServiceResolver;
+	}
+	
+	public IEmployeeService GetEmployeeService()
+	{
+		return this.employeeServiceResolver.Resolve();
 	}
 }
 ```
 
-The IPluginTypeProvider comes with 2 methods:
+The IVariantResolver has parameterless `Resolve` method, which delivers the implementation for variant using the following convention:
 
-* GetDefaultPluginType - delivers the instance of the plugin implementation based on current tenant name
-* GePluginTypeFor - delivers the instance of the plugin implementation for tenant name specified in parameter.
+* If current variant project has type implementing requested interface - resolve it
+* Else if common variant project has type implementing requested interface - resolve it
+* Else - throw DefaultVariantInterfaceNotFoundException
 
-### Plugin resources
+### Variant resources
 
-The library provides also the resources feature. You can define the Resources folder in some of your plugin projects with RESX resources, that can be used globally in your bot, example:
+The library provides also the resources feature. To use it, you should create resources files (*.resx) sharing the same name in your common tenant project and in your tenant-specific projects, eg:
 
-* `MyBot.Plugins.Common.Resources` -> TenantMessages.resx
-* `MyBot.Plugins.Company1.Resources` -> TenantMessages.resx
+* `MyApp` -> Resources/VariantMessages.resx
+* `MyApp.FirstVariant` -> Resources/VariantMessages.resx
 
-The resource file needs to be marked as embedded resource. Also, for each assembly, which delivers the resources you need to create expoeted Resource Provider class, example:
+The resource file needs to be marked as embedded resource. However, it doesn't need to generate designer class.
 
-```cs
-public class Company1ResourceProvider : BaseAssemblyResourceProvider
-{
-	public override string TenantName => "Company1";
-}
-```
-
-Finally, you can use the IResourcesManager, which is getting registered to your container. The provider can be injected to your code, example:
+Now you can use the IResourcesManager, which is getting registered to your container. The provider can be injected to your code, example:
 
 ```cs
 public class ResourceConsumer
 {
 	public ResourceConsumer(IResourcesManager resourcesManager)
 	{
-		var text1 = resourcesManager.GetString("Text1_Key", "TenantMessages");
+		var text1 = resourcesManager.GetString("Text1_Key", "VariantMessages");
 	}
 }
 ```
 
-The resources manager returns the resource string from embedded resource included in the assembly matched with currently selected tenant.
+The IResourcesManager has GetString method, which delivers the resource string from embedded resources included in the variants assemblies using the following convention:
+
+* If current variant project has embedded resource matching by name and it contains searched key - return it
+* Else if common variant project has embedded resource matching by name and it contains searched key - return it
+* Else - throw ResourceKeyNotFoundException
